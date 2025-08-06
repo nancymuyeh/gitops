@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mailhog
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "git@github.com:nancymuyeh/gitops.git"
+    targetRevision: HEAD
+    path: manifests/overlays/dev # Argo CD will run kustomize on this path
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: mailhog # The namespace where Mailhog will be deployed
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    # This tells Argo CD to create the destination namespace if it doesn't exist
+    syncOptions:
+      - CreateNamespace=true
